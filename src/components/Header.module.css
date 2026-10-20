@@ -1,0 +1,53 @@
+.header {
+  position: sticky;
+  top: 0;
+  width: 100%;
+  height: var(--header-height);
+  backdrop-filter: var(--glass-blur-sm);
+  -webkit-backdrop-filter: var(--glass-blur-sm);
+  background: var(--glass-bg-header);
+  z-index: 1000;
+}
+
+.inner {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+  background-color: #000;
+  color: #fff;
+}
+
+.logo {
+  height: 100%;
+  object-fit: contain;
+  padding-left: 1rem;
+}
+
+.brand {
+  flex: 1;
+  text-align: center;
+  font-size: 0.9rem;
+  letter-spacing: 2px;
+  font-weight: 500;
+  padding-right: 2rem;
+}
+
+.languagePicker {
+  display: flex;
+  gap: 0.35rem;
+  padding-right: 1rem;
+}
+
+@media (max-width: 480px) {
+  .brand {
+    font-size: 0.65rem;
+    letter-spacing: 0.5px;
+    padding-right: 0.5rem;
+  }
+
+  .languagePicker {
+    gap: 0.2rem;
+    padding-right: 0.5rem;
+  }
+}

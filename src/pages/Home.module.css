@@ -1,0 +1,33 @@
+.hero {
+  min-height: var(--hero-min-height);
+  overflow: hidden;
+}
+
+.heroVideo {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.heroOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(var(--hero-overlay), var(--hero-overlay));
+  z-index: 1;
+}
+
+.heroContent {
+  z-index: 2;
+  max-width: 800px;
+}
+
+.listings {
+  justify-content: center;
+  scroll-margin-top: var(--listings-scroll-margin);
+}

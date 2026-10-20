@@ -1,0 +1,12 @@
+:root {
+  --glass-blur-sm: blur(10px);
+  --glass-blur-md: blur(18px);
+  --glass-bg-header: rgba(0, 0, 0, 0.35);
+  --glass-bg-section: rgba(0, 0, 0, 0.55);
+  --glass-bg-card: rgba(255, 255, 255, 0.08);
+  --header-height: 4rem;
+  --hero-min-height: 82vh;
+  --hero-overlay: rgba(0, 0, 0, 0.6);
+  --gallery-main-height: clamp(260px, 45vw, 420px);
+  --listings-scroll-margin: 10vh;
+}
