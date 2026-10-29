@@ -24,19 +24,24 @@ npm run preview
 
 ## GitHub Pages
 
-The `main` branch is deployed automatically by
-`.github/workflows/deploy.yml`. Before enabling the workflow:
+Build the site and commit the generated `docs/` directory to the `main` branch:
 
-1. Replace `/REPOSITORY_NAME/` in the workflow's `VITE_BASE_PATH` value
-   with the repository name, keeping the leading and trailing `/`. For a
-   user or organization site (`owner.github.io`), use `/`.
-2. In the repository's **Settings → Pages**, set the publishing source to
-   **GitHub Actions**.
-3. Push to `main` to deploy, or run the workflow manually from the Actions tab.
+```sh
+npm run build
+git add docs
+git commit -m "Build site for GitHub Pages"
+git push origin main
+```
+
+In the repository's **Settings → Pages**, choose **Deploy from a branch**, select
+`main` and the `/docs` folder, then save. For this project repository, the
+default asset base is `/beyondrealtycr/`. If the repository name changes, set
+`VITE_BASE_PATH` to the corresponding path (with leading and trailing `/`)
+when building. For a user or organization site (`owner.github.io`), use `/`.
 
 The app uses hash-based routes so property detail pages also work when opened
-or refreshed on GitHub Pages. For local builds and previews, the base path
-defaults to `/`.
+or refreshed on GitHub Pages. Local development continues to use Vite's root
+URL.
 
 ## Languages
 
