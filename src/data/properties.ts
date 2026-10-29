@@ -1,6 +1,6 @@
 import type { Property } from "../types/Property";
 
-const mediaUrl = (path: string) => `${import.meta.env.BASE_URL}media/${path}`;
+const mediaUrl = (path: string) => `media/${path}`;
 
 export const properties: Property[] = [
   {

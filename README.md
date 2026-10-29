@@ -24,17 +24,17 @@ npm run preview
 
 ## GitHub Pages
 
-Build the site and commit the generated `docs/` directory to the `main` branch:
+Build the site and commit the generated `docs/` directory to the `dev` branch:
 
 ```sh
 npm run build
 git add docs
 git commit -m "Build site for GitHub Pages"
-git push origin main
+git push origin dev
 ```
 
 In the repository's **Settings → Pages**, choose **Deploy from a branch**, select
-`main` and the `/docs` folder, then save. For this project repository, the
+`dev` and the `/docs` folder, then save. For this project repository, the
 asset base is fixed to `/beyondrealtycr/`. If the repository name changes, update
 the `base` value in `vite.config.ts`. For a user or organization site
 (`owner.github.io`), use `/`.
@@ -50,8 +50,7 @@ EN/ES buttons in the header to change the language for the current visit.
 
 ## Branches
 
-- `main`: production releases and GitHub Pages deployment.
-- `dev`: ongoing development; merge tested changes into `main` to publish.
+- `dev`: current branch and GitHub Pages publishing source.
 
 ## Media
 

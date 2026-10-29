@@ -7,7 +7,7 @@ import styles from "./Home.module.css";
 
 function Home() {
   const { t } = useLanguage();
-  const heroVideo = `${import.meta.env.BASE_URL}media/hero.mp4`;
+  const heroVideo = "media/hero.mp4";
 
   return (
     <div className="bg-dark text-light">

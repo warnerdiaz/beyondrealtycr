@@ -4,7 +4,7 @@ import { useLanguage } from "../i18n";
 import styles from "./Header.module.css";
 
 const Header = () => {
-  const logo = `${import.meta.env.BASE_URL}media/logo.svg`;
+  const logo = "media/logo.svg";
   const { language, setLanguage, t } = useLanguage();
 
   return (
