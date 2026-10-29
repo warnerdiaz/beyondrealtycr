@@ -3,7 +3,7 @@ import { defineConfig } from "vite";
 
 // https://vite.dev/config/
 export default defineConfig(({ command }) => ({
-  base: command === "build" ? process.env.VITE_BASE_PATH || "/beyondrealtycr/" : "/",
+  base: command === "build" ? "/beyondrealtycr/" : "/",
   build: {
     outDir: "docs",
   },

@@ -35,9 +35,9 @@ git push origin main
 
 In the repository's **Settings → Pages**, choose **Deploy from a branch**, select
 `main` and the `/docs` folder, then save. For this project repository, the
-default asset base is `/beyondrealtycr/`. If the repository name changes, set
-`VITE_BASE_PATH` to the corresponding path (with leading and trailing `/`)
-when building. For a user or organization site (`owner.github.io`), use `/`.
+asset base is fixed to `/beyondrealtycr/`. If the repository name changes, update
+the `base` value in `vite.config.ts`. For a user or organization site
+(`owner.github.io`), use `/`.
 
 The app uses hash-based routes so property detail pages also work when opened
 or refreshed on GitHub Pages. Local development continues to use Vite's root
