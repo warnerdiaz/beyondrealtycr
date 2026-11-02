@@ -16,13 +16,13 @@ const PropertyGallery = ({ media }: Props) => {
   const [open, setOpen] = useState(false);
   const [index, setIndex] = useState(0);
   const { t } = useLanguage();
-  const cover = media.find((item) => item.type === "cover");
+  const galleryMedia = media.filter((item) => item.type !== "cover");
 
-  const slides: Slide[] = media.map((m) => {
+  const slides: Slide[] = galleryMedia.map((m) => {
     if (m.type === "video") {
       return {
         type: "video",
-        poster: m.poster ?? cover?.url,
+        poster: m.poster,
         sources: [{ src: m.url, type: "video/mp4" }],
         width: 1280,
         height: 720,
@@ -34,7 +34,7 @@ const PropertyGallery = ({ media }: Props) => {
 
   return (
     <>
-      {media[0] && (
+      {galleryMedia[0] && (
         <button
           type="button"
           className={styles.mainWrapper}
@@ -44,18 +44,27 @@ const PropertyGallery = ({ media }: Props) => {
           }}
           aria-label={t("propertyGallery")}
         >
-          <img
-            src={media[0].type === "video" ? media[0].poster ?? cover?.url : media[0].url}
-            className={`img-fluid rounded ${styles.mainImage}`}
-            alt="Property gallery preview"
-          />
+          {galleryMedia[0].type === "video" ? (
+            <video
+              src={galleryMedia[0].url}
+              muted
+              playsInline
+              preload="metadata"
+              className={`img-fluid rounded ${styles.mainImage}`}
+              aria-hidden="true"
+            />
+          ) : (
+            <img
+              src={galleryMedia[0].url}
+              className={`img-fluid rounded ${styles.mainImage}`}
+              alt="Property gallery preview"
+            />
+          )}
         </button>
       )}
 
       <Row className="g-2">
-        {media.slice(1).map((item, i) => {
-          const thumbnail = item.type === "video" ? item.poster ?? cover?.url : item.url;
-
+        {galleryMedia.slice(1).map((item, i) => {
           return (
             <Col xs={3} key={item.url}>
               <button
@@ -67,16 +76,27 @@ const PropertyGallery = ({ media }: Props) => {
                 }}
                 aria-label={`${t("galleryItem")} ${i + 2}`}
               >
-                {thumbnail && (
+                {item.type === "video" ? (
+                  <video
+                    src={item.url}
+                    muted
+                    playsInline
+                    preload="metadata"
+                    className={`img-fluid rounded ${styles.thumbnail}`}
+                    aria-hidden="true"
+                  />
+                ) : (
                   <img
-                    src={thumbnail}
+                    src={item.url}
                     className={`img-fluid rounded ${styles.thumbnail}`}
                     alt=""
                     loading="lazy"
                     decoding="async"
                   />
                 )}
-                {item.type === "video" && <span className={styles.videoBadge}>{t("video")}</span>}
+                {item.type === "video" && (
+                  <span className={styles.videoBadge}>{t("video")}</span>
+                )}
               </button>
             </Col>
           );

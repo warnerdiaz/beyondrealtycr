@@ -11,7 +11,6 @@ export const properties: Property[] = [
         {
           type: "video",
           url: mediaUrl("properties/cahuita/en/tour.mp4"),
-          poster: mediaUrl("properties/cahuita/en/cover.jpg"),
         },
         { type: "cover", url: mediaUrl("properties/cahuita/en/cover.jpg") },
       ],
@@ -19,7 +18,6 @@ export const properties: Property[] = [
         {
           type: "video",
           url: mediaUrl("properties/cahuita/es/tour.mp4"),
-          poster: mediaUrl("properties/cahuita/es/cover.jpg"),
         },
         { type: "cover", url: mediaUrl("properties/cahuita/es/cover.jpg") },
       ],
