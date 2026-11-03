@@ -68,6 +68,23 @@ const translations = {
       "List your finca or lote with Beyond Realty Costa Rica and reach buyers searching for Costa Rican land. Share a few details and we'll follow up with a free valuation.",
     sellWithUsCta: "Get a free valuation",
     propertyFeatures: "Property Features",
+    contactSectionTitle: "Interested in this property?",
+    contactSectionDescription:
+      "Reach out on WhatsApp for a fast reply, or send us a message below.",
+    whatsAppCta: "Chat on WhatsApp",
+    contactFormName: "Name",
+    contactFormEmail: "Email",
+    contactFormMessage: "Message",
+    contactFormNamePlaceholder: "Your name",
+    contactFormEmailPlaceholder: "you@example.com",
+    contactFormSubmit: "Send message",
+    contactFormSubmitting: "Sending...",
+    contactFormSuccess:
+      "Thanks! Your message has been sent. We'll get back to you shortly.",
+    contactFormError:
+      "We couldn't send your message right now. Please try again or reach us on WhatsApp.",
+    contactFormNotConfigured:
+      "Email contact isn't set up yet. Please reach us on WhatsApp instead.",
   },
   es: {
     bathrooms: "Baños",
@@ -134,6 +151,23 @@ const translations = {
       "Publique su finca o lote con Beyond Realty Costa Rica y llegue a compradores que buscan terrenos en Costa Rica. Cuéntenos algunos detalles y le responderemos con una valoración gratuita.",
     sellWithUsCta: "Obtener valoración gratuita",
     propertyFeatures: "Características de la propiedad",
+    contactSectionTitle: "¿Le interesa esta propiedad?",
+    contactSectionDescription:
+      "Escríbanos por WhatsApp para una respuesta rápida, o envíenos un mensaje a continuación.",
+    whatsAppCta: "Chatear por WhatsApp",
+    contactFormName: "Nombre",
+    contactFormEmail: "Correo electrónico",
+    contactFormMessage: "Mensaje",
+    contactFormNamePlaceholder: "Su nombre",
+    contactFormEmailPlaceholder: "usted@ejemplo.com",
+    contactFormSubmit: "Enviar mensaje",
+    contactFormSubmitting: "Enviando...",
+    contactFormSuccess:
+      "¡Gracias! Su mensaje ha sido enviado. Le responderemos en breve.",
+    contactFormError:
+      "No pudimos enviar su mensaje en este momento. Inténtelo de nuevo o escríbanos por WhatsApp.",
+    contactFormNotConfigured:
+      "El contacto por correo aún no está configurado. Por favor escríbanos por WhatsApp.",
   },
 } as const;
 
