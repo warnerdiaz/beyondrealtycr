@@ -1,5 +1,4 @@
 import { lazy, Suspense } from "react";
-import { Container } from "react-bootstrap";
 import { HashRouter, Link, Route, Routes } from "react-router-dom";
 import ErrorBoundary from "./components/ErrorBoundary";
 import Footer from "./components/Footer";
@@ -25,10 +24,7 @@ function AppContent() {
       >
         <Suspense
           fallback={
-            <div
-              className="d-flex justify-content-center align-items-center bg-dark text-light"
-              style={{ minHeight: "90vh" }}
-            >
+            <div className="flex min-h-[90vh] items-center justify-center bg-surface text-ink">
               {t("loading")}
             </div>
           }
@@ -39,10 +35,14 @@ function AppContent() {
             <Route
               path="*"
               element={
-                <Container className="py-5 text-center text-light">
-                  <h1>{t("pageNotFound")}</h1>
-                  <Link to="/">{t("returnHome")}</Link>
-                </Container>
+                <main className="mx-auto max-w-4xl px-4 py-20 text-center">
+                  <h1 className="mb-4 text-2xl font-semibold">
+                    {t("pageNotFound")}
+                  </h1>
+                  <Link to="/" className="text-accent hover:text-accent-hover">
+                    {t("returnHome")}
+                  </Link>
+                </main>
               }
             />
           </Routes>

@@ -43,6 +43,8 @@ const translations = {
     video: "Video",
     heroTitle: "Discover Exceptional Properties in Costa Rica",
     footerBrand: "© Beyond Realty Costa Rica",
+    listingsPlaceholder:
+      "Our curated catalog of fincas and lotes is coming soon. Check back shortly to explore exceptional properties across Costa Rica.",
   },
   es: {
     bathrooms: "Baños",
@@ -84,6 +86,8 @@ const translations = {
     video: "Video",
     heroTitle: "Descubra propiedades excepcionales en Costa Rica",
     footerBrand: "© Beyond Realty Costa Rica",
+    listingsPlaceholder:
+      "Nuestro catálogo seleccionado de fincas y lotes estará disponible muy pronto. Vuelva en breve para explorar propiedades excepcionales en Costa Rica.",
   },
 } as const;
 

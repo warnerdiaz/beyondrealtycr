@@ -1,19 +1,18 @@
-import { Button, Col, Container, Row } from "react-bootstrap";
-import PropertyCard from "../components/PropertyCard";
-import SellWithUs from "../components/SellWithUs";
-import { properties } from "../data/properties";
 import { useLanguage } from "../i18n";
-import styles from "./Home.module.css";
 
 function Home() {
   const { t } = useLanguage();
-  const heroVideo = "media/hero.mp4";
+  const heroVideo = "/media/hero.mp4";
+
+  const scrollToListings = () =>
+    document
+      .getElementById("listings")
+      ?.scrollIntoView({ behavior: "smooth" });
 
   return (
-    <div className="bg-dark text-light">
-      <section
-        className={`d-flex align-items-center justify-content-center text-center position-relative ${styles.hero}`}
-      >
+    <div>
+      {/* Dark cinematic video hero (brand). */}
+      <section className="relative flex min-h-[82vh] items-center justify-center overflow-hidden text-center">
         <video
           src={heroVideo}
           autoPlay
@@ -22,31 +21,36 @@ function Home() {
           playsInline
           preload="metadata"
           aria-hidden="true"
-          className={styles.heroVideo}
+          className="absolute inset-0 h-full w-full object-cover"
         />
-        <div className={styles.heroOverlay} />
-        <Container className={`position-relative text-white ${styles.heroContent}`}>
-          <h1 className="display-4 fw-semibold mb-4">
+        <div className="absolute inset-0 bg-black/60" />
+        <div className="relative z-10 mx-auto max-w-3xl px-4 text-white">
+          <h1 className="mb-6 text-4xl font-semibold sm:text-5xl">
             {t("heroTitle")}
           </h1>
-          <p className="lead mb-4 text-white-50">{t("description")}</p>
-          <Button
-            variant="outline-secondary"
-            size="lg"
-            onClick={() => document.getElementById("listings")?.scrollIntoView({ behavior: "smooth" })}
+          <p className="mb-8 text-lg text-white/80">{t("description")}</p>
+          <button
+            type="button"
+            onClick={scrollToListings}
+            className="rounded-md bg-accent px-6 py-3 text-base font-medium text-accent-contrast transition-colors hover:bg-accent-hover"
           >
             {t("viewListings")}
-          </Button>
-        </Container>
+          </button>
+        </div>
       </section>
-      <Row id="listings" className={`g-4 p-4 ${styles.listings}`}>
-        {properties.map((property) => (
-          <Col md={4} key={property.id}>
-            <PropertyCard property={property} />
-          </Col>
-        ))}
-      </Row>
-      <SellWithUs />
+
+      {/* Light, airy content section (Zillow readability). Real cards land in a later slice. */}
+      <section
+        id="listings"
+        className="scroll-mt-header bg-surface text-ink"
+      >
+        <div className="mx-auto w-full max-w-7xl px-4 py-16">
+          <h2 className="mb-4 text-2xl font-semibold sm:text-3xl">
+            {t("viewListings")}
+          </h2>
+          <p className="max-w-2xl text-muted">{t("listingsPlaceholder")}</p>
+        </div>
+      </section>
     </div>
   );
 }
