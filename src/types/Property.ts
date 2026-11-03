@@ -29,6 +29,21 @@ export type Region =
   | "northern";
 
 /**
+ * Official Costa Rican province taxonomy used for the province filter (see
+ * src/lib/provinces.ts for display labels). Independent of `Region` — the
+ * region <-> province mapping is not 1:1, so this is hand-assigned per
+ * listing, not derived.
+ */
+export type Province =
+  | "san-jose"
+  | "alajuela"
+  | "cartago"
+  | "heredia"
+  | "guanacaste"
+  | "puntarenas"
+  | "limon";
+
+/**
  * Finca/lote feature flags. Optional and render-only-when-present on the
  * UI — keep this flat and simple rather than overlapping with bedrooms
  * /bathrooms, which apply to any built structure on the land.
@@ -48,6 +63,7 @@ export interface Property {
   priceUsd: number;
   landAcres: number;
   region: Region;
+  province: Province;
   media: Record<"en" | "es", PropertyMedia[]>;
   translations: Record<"en" | "es", PropertyTranslation>;
   buildingSize?: string;

@@ -24,7 +24,7 @@ Phase 2 (SEO/prerender) is still pending — see the backlog near the end.
 ### Scripts
 - `npm run dev` — local dev server.
 - `npm run build` — `tsc -b && vite build` → writes to `docs/`.
-- `npm test` — `vitest run` (currently **40 tests** passing).
+- `npm test` — `vitest run` (currently **46 tests** passing).
 - `npm run lint` — ESLint (uses the **React Compiler** rules — avoid unnecessary `useMemo`/
   manual memoization; derive values directly in render).
 
@@ -48,14 +48,16 @@ src/
   lib/                      PURE, TESTED modules (no React, no I/O)
     format.ts  (+test)      formatPrice, formatLandSize (acres→ha), slugify
     regions.ts              REGIONS, REGION_LABELS, getRegionLabel(region, lang)
+    provinces.ts            PROVINCES, PROVINCE_LABELS, getProvinceLabel(province, lang)
     media.ts   (+test)      selectCoverMedia, getGalleryImages, getGalleryVideos
     whatsapp.ts (+test)     buildWhatsAppUrl(phone, property, lang)
     filter.ts  (+test)      filterProperties(properties, filters); PropertyFilters type
+    filterOptions.ts (+test) getFilterOptions(properties) → present type/province/region values
   components/
     Header.tsx              sticky nav, logo, EN/ES toggle
     Footer.tsx              light footer
     PropertyCard.tsx        Zillow-style card (links to /property/:id)
-    FilterBar.tsx           controlled type/region/price/land-size filters
+    FilterBar.tsx           controlled type/province/region/price/land-size filters
     Lightbox.tsx            custom full-screen gallery overlay (no external dep)
     ContactForm.tsx         Web3Forms email form with idle/submitting/success/error states
     SellWithUs.tsx          CTA band for property owners (mailto)
@@ -79,6 +81,8 @@ those modules. When adding logic, prefer a pure function in `lib/` with a co-loc
 type PropertyType = "finca" | "lote";                 // extensible: | "casa" | "comercial"
 type Region = "guanacaste" | "south-caribbean" | "central-pacific"
             | "south-pacific" | "central-valley" | "northern";
+type Province = "san-jose" | "alajuela" | "cartago" | "heredia"
+               | "guanacaste" | "puntarenas" | "limon";
 
 interface PropertyFeatures {
   water?: boolean; electricity?: boolean; forest?: boolean;
@@ -90,6 +94,7 @@ interface Property {
   priceUsd: number;          // numeric; displayed via formatPrice → "$400,000"
   landAcres: number;         // numeric; displayed via formatLandSize → "37 acres (15 ha)"
   region: Region;
+  province: Province;
   media: Record<"en" | "es", PropertyMedia[]>;        // item: {type: "image"|"video"|"cover", url, poster?}
   translations: Record<"en" | "es", { title; location; description }>;
   buildingSize?: string; bedrooms?: number; bathrooms?: number; jacuzzi?: number;
@@ -102,13 +107,18 @@ Rules:
   shown in parentheses. Store numbers, never pre-formatted strings.
 - Optional fields render **only when present** — a `lote` shows no bedrooms/baths; a `finca`
   with construction shows building size/amenities; absent `features` rows are omitted.
-- Region values map to EN/ES labels via `src/lib/regions.ts` (tourist regions, chosen so a
-  US buyer recognizes the area). The town/province lives in `translations[lang].location`.
+- Dual location taxonomy, both **hand-assigned** (neither is derived from the other, since
+  the mapping isn't 1:1): `region` (tourist region, chosen so a US buyer recognizes the
+  area — labels in `src/lib/regions.ts`) and `province` (official Costa Rican province —
+  labels in `src/lib/provinces.ts`). Both are filter dimensions; `province` is filter-only
+  and is never rendered as its own chip. The town/province name also lives as free text in
+  `translations[lang].location`, displayed as "location · region" on the card.
 
 ### Adding a new listing
 Edit `src/data/properties.ts`: add a `Property` with a unique `id`, numeric `priceUsd` /
-`landAcres`, a `region`, EN+ES `translations`, and per-language `media`. Put media files
-under `public/media/properties/<slug>/<lang>/`. Then rebuild & deploy (see below).
+`landAcres`, a `region` AND a `province` (hand-assign both independently), EN+ES
+`translations`, and per-language `media`. Put media files under
+`public/media/properties/<slug>/<lang>/`. Then rebuild & deploy (see below).
 
 ---
 
@@ -208,7 +218,7 @@ Never commit real secrets; keep them in `.env.local` (gitignored) or the build e
 | Property types | Fincas + Lotes (model extensible to casas/commercial). |
 | Palette | Dark hero + light content; monochrome + green/teal accent. |
 | Currency / units | USD price + acres (ha secondary). Numeric for filtering. |
-| Location taxonomy | Tourist regions (not official provinces) for the zone filter. |
+| Location taxonomy | Dual taxonomy, both hand-assigned per listing (not derived from each other): the official **province** (7, `src/lib/provinces.ts`) and the tourist **region** (6, `src/lib/regions.ts`). Both are filter dimensions; the free-text location string still shows "location · region". |
 | Languages | Bilingual EN/ES, default EN. |
 | Traffic strategy | Google + link sharing → SEO matters (Phase 2). |
 

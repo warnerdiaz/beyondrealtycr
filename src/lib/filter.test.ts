@@ -9,6 +9,7 @@ function makeProperty(overrides: Partial<Property>): Property {
     priceUsd: 400000,
     landAcres: 37,
     region: "south-caribbean",
+    province: "limon",
     media: { en: [], es: [] },
     translations: {
       en: { description: "", location: "", title: "" },
@@ -24,6 +25,7 @@ const finca = makeProperty({
   priceUsd: 400000,
   landAcres: 37,
   region: "south-caribbean",
+  province: "limon",
 });
 
 const lote = makeProperty({
@@ -32,6 +34,7 @@ const lote = makeProperty({
   priceUsd: 150000,
   landAcres: 5,
   region: "guanacaste",
+  province: "guanacaste",
 });
 
 const midRangeFinca = makeProperty({
@@ -40,6 +43,7 @@ const midRangeFinca = makeProperty({
   priceUsd: 250000,
   landAcres: 10,
   region: "guanacaste",
+  province: "puntarenas",
 });
 
 const properties: Property[] = [finca, lote, midRangeFinca];
@@ -58,6 +62,27 @@ describe("filterProperties", () => {
       lote,
       midRangeFinca,
     ]);
+  });
+
+  it("filters by province only", () => {
+    expect(filterProperties(properties, { province: "limon" })).toEqual([
+      finca,
+    ]);
+  });
+
+  it("combines province and region filters with AND", () => {
+    expect(
+      filterProperties(properties, {
+        province: "puntarenas",
+        region: "guanacaste",
+      }),
+    ).toEqual([midRangeFinca]);
+    expect(
+      filterProperties(properties, {
+        province: "limon",
+        region: "guanacaste",
+      }),
+    ).toEqual([]);
   });
 
   it("filters by price range with only a min bound", () => {
