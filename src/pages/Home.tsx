@@ -1,3 +1,5 @@
+import PropertyCard from "../components/PropertyCard";
+import { properties } from "../data/properties";
 import { useLanguage } from "../i18n";
 
 function Home() {
@@ -39,7 +41,7 @@ function Home() {
         </div>
       </section>
 
-      {/* Light, airy content section (Zillow readability). Real cards land in a later slice. */}
+      {/* Light, airy content section (Zillow readability). */}
       <section
         id="listings"
         className="scroll-mt-header bg-surface text-ink"
@@ -48,7 +50,15 @@ function Home() {
           <h2 className="mb-4 text-2xl font-semibold sm:text-3xl">
             {t("viewListings")}
           </h2>
-          <p className="max-w-2xl text-muted">{t("listingsPlaceholder")}</p>
+          {properties.length === 0 ? (
+            <p className="max-w-2xl text-muted">{t("listingsPlaceholder")}</p>
+          ) : (
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {properties.map((property) => (
+                <PropertyCard key={property.id} property={property} />
+              ))}
+            </div>
+          )}
         </div>
       </section>
     </div>
