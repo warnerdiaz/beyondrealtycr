@@ -1,4 +1,5 @@
 import PropertyCard from "../components/PropertyCard";
+import SellWithUs from "../components/SellWithUs";
 import { properties } from "../data/properties";
 import { useLanguage } from "../i18n";
 
@@ -61,6 +62,8 @@ function Home() {
           )}
         </div>
       </section>
+
+      <SellWithUs />
     </div>
   );
 }
