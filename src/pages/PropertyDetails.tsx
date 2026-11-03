@@ -1,11 +1,14 @@
 import { useState } from "react";
 import { Link, useParams } from "react-router-dom";
+import ContactForm from "../components/ContactForm";
 import Lightbox from "../components/Lightbox";
+import { WHATSAPP_PHONE } from "../config/contact";
 import { properties } from "../data/properties";
 import { useLanguage } from "../i18n";
 import { formatLandSize, formatPrice } from "../lib/format";
 import { getGalleryImages, getGalleryVideos, selectCoverMedia } from "../lib/media";
 import { getRegionLabel } from "../lib/regions";
+import { buildWhatsAppUrl } from "../lib/whatsapp";
 
 const PropertyDetails = () => {
   const { id } = useParams();
@@ -144,9 +147,19 @@ const PropertyDetails = () => {
         {/* Price + title */}
         <h1 className="mb-1 text-3xl font-semibold">{translation.title}</h1>
         <p className="mb-4 text-muted">{translation.location}</p>
-        <p className="mb-6 text-2xl font-semibold text-accent">
-          {formatPrice(property.priceUsd)}
-        </p>
+        <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
+          <p className="text-2xl font-semibold text-accent">
+            {formatPrice(property.priceUsd)}
+          </p>
+          <a
+            href={buildWhatsAppUrl(WHATSAPP_PHONE, property, language)}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-block rounded-md bg-accent px-6 py-3 text-base font-medium text-accent-contrast transition-colors hover:bg-accent-hover"
+          >
+            {t("whatsAppCta")}
+          </a>
+        </div>
 
         {/* Key facts strip */}
         <dl className="mb-8 grid grid-cols-2 gap-4 rounded-lg border border-line bg-surface-muted p-4 sm:grid-cols-4">
@@ -225,9 +238,28 @@ const PropertyDetails = () => {
         )}
 
         {/* Description */}
-        <div className="mb-4 max-w-2xl leading-relaxed whitespace-pre-line">
+        <div className="mb-8 max-w-2xl leading-relaxed whitespace-pre-line">
           {translation.description}
         </div>
+
+        {/* Contact / lead capture */}
+        <section className="mb-8 max-w-2xl rounded-lg border border-line bg-surface-muted p-6">
+          <h2 className="mb-2 text-lg font-semibold">
+            {t("contactSectionTitle")}
+          </h2>
+          <p className="mb-4 text-sm text-muted">
+            {t("contactSectionDescription")}
+          </p>
+          <a
+            href={buildWhatsAppUrl(WHATSAPP_PHONE, property, language)}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mb-6 inline-block rounded-md bg-accent px-6 py-3 text-base font-medium text-accent-contrast transition-colors hover:bg-accent-hover"
+          >
+            {t("whatsAppCta")}
+          </a>
+          <ContactForm property={property} />
+        </section>
 
         <Link
           to="/"
