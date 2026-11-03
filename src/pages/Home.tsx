@@ -1,11 +1,21 @@
+import { useState } from "react";
+import FilterBar from "../components/FilterBar";
 import PropertyCard from "../components/PropertyCard";
 import SellWithUs from "../components/SellWithUs";
 import { properties } from "../data/properties";
 import { useLanguage } from "../i18n";
+import { filterProperties, type PropertyFilters } from "../lib/filter";
 
 function Home() {
   const { t } = useLanguage();
   const heroVideo = "/media/hero.mp4";
+  const [filters, setFilters] = useState<PropertyFilters>({});
+
+  const visibleProperties = filterProperties(properties, filters);
+  const resultsLabel =
+    visibleProperties.length === 1
+      ? t("filterResultsCountSingular")
+      : t("filterResultsCountPlural");
 
   const scrollToListings = () =>
     document
@@ -54,11 +64,27 @@ function Home() {
           {properties.length === 0 ? (
             <p className="max-w-2xl text-muted">{t("listingsPlaceholder")}</p>
           ) : (
-            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {properties.map((property) => (
-                <PropertyCard key={property.id} property={property} />
-              ))}
-            </div>
+            <>
+              <FilterBar
+                filters={filters}
+                onChange={setFilters}
+                onClear={() => setFilters({})}
+              />
+              <p className="mb-4 text-sm text-muted">
+                {visibleProperties.length} {resultsLabel}
+              </p>
+              {visibleProperties.length === 0 ? (
+                <p className="max-w-2xl text-muted">
+                  {t("filterEmptyState")}
+                </p>
+              ) : (
+                <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                  {visibleProperties.map((property) => (
+                    <PropertyCard key={property.id} property={property} />
+                  ))}
+                </div>
+              )}
+            </>
           )}
         </div>
       </section>

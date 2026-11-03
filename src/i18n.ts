@@ -85,6 +85,19 @@ const translations = {
       "We couldn't send your message right now. Please try again or reach us on WhatsApp.",
     contactFormNotConfigured:
       "Email contact isn't set up yet. Please reach us on WhatsApp instead.",
+    filterAllTypes: "All types",
+    filterAllRegions: "All regions",
+    filterType: "Type",
+    filterRegion: "Region",
+    filterPriceRange: "Price range (USD)",
+    filterLandSizeRange: "Land size range (acres)",
+    filterMinPlaceholder: "Min",
+    filterMaxPlaceholder: "Max",
+    filterClear: "Clear filters",
+    filterResultsCountSingular: "property",
+    filterResultsCountPlural: "properties",
+    filterEmptyState:
+      "No properties match your filters. Try adjusting or clearing them.",
   },
   es: {
     bathrooms: "Baños",
@@ -168,6 +181,19 @@ const translations = {
       "No pudimos enviar su mensaje en este momento. Inténtelo de nuevo o escríbanos por WhatsApp.",
     contactFormNotConfigured:
       "El contacto por correo aún no está configurado. Por favor escríbanos por WhatsApp.",
+    filterAllTypes: "Todos los tipos",
+    filterAllRegions: "Todas las regiones",
+    filterType: "Tipo",
+    filterRegion: "Región",
+    filterPriceRange: "Rango de precio (USD)",
+    filterLandSizeRange: "Rango de tamaño (acres)",
+    filterMinPlaceholder: "Mín",
+    filterMaxPlaceholder: "Máx",
+    filterClear: "Limpiar filtros",
+    filterResultsCountSingular: "propiedad",
+    filterResultsCountPlural: "propiedades",
+    filterEmptyState:
+      "Ninguna propiedad coincide con sus filtros. Intente ajustarlos o límpielos.",
   },
 } as const;
 
