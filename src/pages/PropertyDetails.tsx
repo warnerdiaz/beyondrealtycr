@@ -1,6 +1,7 @@
 import { Link, useParams } from "react-router-dom";
 import { properties } from "../data/properties";
 import { useLanguage } from "../i18n";
+import { formatPrice } from "../lib/format";
 
 // Minimal placeholder for the walking skeleton. The full Zillow-style detail
 // page (gallery, specs, contact paths) is rebuilt in a later slice.
@@ -33,7 +34,9 @@ const PropertyDetails = () => {
         </Link>
         <h1 className="mb-2 text-3xl font-semibold">{translation.title}</h1>
         <p className="mb-4 text-muted">{translation.location}</p>
-        <p className="mb-6 text-xl font-medium text-accent">{property.price}</p>
+        <p className="mb-6 text-xl font-medium text-accent">
+          {formatPrice(property.priceUsd)}
+        </p>
         <p className="max-w-2xl leading-relaxed">{translation.description}</p>
       </div>
     </main>

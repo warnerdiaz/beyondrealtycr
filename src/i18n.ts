@@ -45,6 +45,10 @@ const translations = {
     footerBrand: "© Beyond Realty Costa Rica",
     listingsPlaceholder:
       "Our curated catalog of fincas and lotes is coming soon. Check back shortly to explore exceptional properties across Costa Rica.",
+    propertyTypeFinca: "Finca",
+    propertyTypeLote: "Lot",
+    bedsAbbr: "bd",
+    bathsAbbr: "ba",
   },
   es: {
     bathrooms: "Baños",
@@ -88,6 +92,10 @@ const translations = {
     footerBrand: "© Beyond Realty Costa Rica",
     listingsPlaceholder:
       "Nuestro catálogo seleccionado de fincas y lotes estará disponible muy pronto. Vuelva en breve para explorar propiedades excepcionales en Costa Rica.",
+    propertyTypeFinca: "Finca",
+    propertyTypeLote: "Lote",
+    bedsAbbr: "hab",
+    bathsAbbr: "baños",
   },
 } as const;
 

@@ -5,7 +5,10 @@ const mediaUrl = (path: string) => `media/${path}`;
 export const properties: Property[] = [
   {
     id: "p1",
-    landSize: "37 acres (15 ha)",
+    type: "finca",
+    priceUsd: 400000,
+    landAcres: 37,
+    region: "south-caribbean",
     media: {
       en: [
         {
@@ -22,7 +25,6 @@ export const properties: Property[] = [
         { type: "cover", url: mediaUrl("properties/cahuita/es/cover.jpg") },
       ],
     },
-    price: "$400,000",
     translations: {
       en: {
         description:
