@@ -1,5 +1,4 @@
 import { Component, type ErrorInfo, type ReactNode } from "react";
-import { Button, Container } from "react-bootstrap";
 
 interface Props {
   children: ReactNode;
@@ -26,16 +25,19 @@ class ErrorBoundary extends Component<Props, State> {
   render() {
     if (this.state.hasError) {
       return (
-        <Container className="d-flex flex-column align-items-center justify-content-center text-light bg-dark" style={{ minHeight: "90vh" }}>
-          <h2 className="mb-3">{this.props.errorTitle}</h2>
-          <p className="text-secondary mb-4">{this.props.errorMessage}</p>
-          <Button
-            variant="outline-secondary"
+        <div className="flex min-h-[90vh] flex-col items-center justify-center bg-surface px-4 text-center text-ink">
+          <h2 className="mb-3 text-2xl font-semibold">
+            {this.props.errorTitle}
+          </h2>
+          <p className="mb-6 text-muted">{this.props.errorMessage}</p>
+          <button
+            type="button"
+            className="rounded-md bg-accent px-5 py-2 font-medium text-accent-contrast transition-colors hover:bg-accent-hover"
             onClick={() => this.setState({ hasError: false })}
           >
             {this.props.tryAgainLabel}
-          </Button>
-        </Container>
+          </button>
+        </div>
       );
     }
 

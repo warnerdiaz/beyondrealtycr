@@ -1,9 +1,9 @@
-import { Card, Col, Container, ListGroup, Row } from "react-bootstrap";
 import { Link, useParams } from "react-router-dom";
-import PropertyGallery from "../components/PropertyGallery";
 import { properties } from "../data/properties";
 import { useLanguage } from "../i18n";
 
+// Minimal placeholder for the walking skeleton. The full Zillow-style detail
+// page (gallery, specs, contact paths) is rebuilt in a later slice.
 const PropertyDetails = () => {
   const { id } = useParams();
   const { language, t } = useLanguage();
@@ -11,63 +11,31 @@ const PropertyDetails = () => {
 
   if (!property) {
     return (
-      <Container className="py-5 text-light">
-        <h1>{t("notFound")}</h1>
-        <Link to="/">{t("returnListings")}</Link>
-      </Container>
+      <main className="mx-auto max-w-4xl px-4 py-20 text-center">
+        <h1 className="mb-4 text-2xl font-semibold">{t("notFound")}</h1>
+        <Link to="/" className="text-accent hover:text-accent-hover">
+          {t("returnListings")}
+        </Link>
+      </main>
     );
   }
 
+  const translation = property.translations[language];
+
   return (
-    <main className="bg-dark text-light min-vh-100">
-      <Container className="py-5">
-        <Row className="g-4">
-          <Col xs={12}>
-            <Card className="shadow-sm">
-              <Card.Body>
-                <Card.Title className="mb-2">
-                  {property.translations[language].title}
-                </Card.Title>
-                <Card.Subtitle className="mb-3 text-muted">
-                  {property.translations[language].location}
-                </Card.Subtitle>
-                <h4 className="text-primary mb-3">{property.price}</h4>
-                <Card.Text>{property.translations[language].description}</Card.Text>
-                <ListGroup variant="flush" className="mt-3">
-                  {property.bathrooms != null && (
-                    <ListGroup.Item>
-                      🚿 {t("bathrooms")}: {property.bathrooms}
-                    </ListGroup.Item>
-                  )}
-                  {property.bedrooms != null && (
-                    <ListGroup.Item>
-                      🛏 {t("bedrooms")}: {property.bedrooms}
-                    </ListGroup.Item>
-                  )}
-                  {property.buildingSize && (
-                    <ListGroup.Item>
-                      🏡 {t("building")}: {property.buildingSize}
-                    </ListGroup.Item>
-                  )}
-                  {property.jacuzzi != null && (
-                    <ListGroup.Item>
-                      🛁 {t("jacuzzi")}: {property.jacuzzi}
-                    </ListGroup.Item>
-                  )}
-                  {property.landSize && (
-                    <ListGroup.Item>
-                      🌳 {t("landArea")}: {property.landSize}
-                    </ListGroup.Item>
-                  )}
-                </ListGroup>
-              </Card.Body>
-            </Card>
-          </Col>
-          <Col xs={12}>
-            <PropertyGallery media={property.media[language]} />
-          </Col>
-        </Row>
-      </Container>
+    <main className="min-h-[70vh] bg-surface text-ink">
+      <div className="mx-auto w-full max-w-4xl px-4 py-16">
+        <Link
+          to="/"
+          className="mb-6 inline-block text-accent hover:text-accent-hover"
+        >
+          ← {t("returnListings")}
+        </Link>
+        <h1 className="mb-2 text-3xl font-semibold">{translation.title}</h1>
+        <p className="mb-4 text-muted">{translation.location}</p>
+        <p className="mb-6 text-xl font-medium text-accent">{property.price}</p>
+        <p className="max-w-2xl leading-relaxed">{translation.description}</p>
+      </div>
     </main>
   );
 };
