@@ -1,0 +1,23 @@
+{
+  "_client--z7Y1FD_.js": {
+    "file": "assets/client--z7Y1FD_.js",
+    "name": "client",
+    "isDynamicEntry": true,
+    "imports": [
+      "index.html"
+    ]
+  },
+  "index.html": {
+    "file": "assets/app-C0ggwMcm.js",
+    "name": "app",
+    "src": "index.html",
+    "isEntry": true,
+    "dynamicImports": [
+      "_client--z7Y1FD_.js",
+      "_client--z7Y1FD_.js"
+    ],
+    "css": [
+      "assets/app-OZwMPMXp.css"
+    ]
+  }
+}
