@@ -7,9 +7,10 @@ commission on sales, so every listing must have strong contact paths.
 Design north star: the **navigation and listing format of Zillow**, adapted to a small
 curated catalog, while keeping our **minimalist, monochrome brand**.
 
-**Status:** Phase 1 (visual redesign MVP) is **implemented and deployed** to `dev`.
-Phase 2 (SEO/prerender) is **implemented** on branch `feature/phase2-seo-ux` (not yet
-deployed) — see "SSG / prerendering" below and the backlog near the end.
+**Status:** Phase 1 (visual redesign MVP) and Phase 2 (SEO/prerender + gallery, trust
+sections, WhatsApp FAB, price/acre, region locator) are both **implemented and deployed**
+to `dev` / production (`beyondrealtycr.com`) — see "SSG / prerendering" below. Remaining
+nice-to-haves are in the backlog near the end.
 
 ---
 
@@ -216,8 +217,11 @@ Never commit real secrets; keep them in `.env.local` (gitignored) or the build e
 - `dev` — **default + production** (GitHub Pages publishing source).
 - `last-version` — backup snapshot of the pre-redesign site (do not delete).
 - `develop_jordan` — the redesign integration branch used during Phase 1.
-- `feature/phase2-seo-ux` — Phase 2 work (SSG/SEO + gallery/trust/FAB/UX); code-only, no
-  `docs/` build committed. Review locally with `npm run dev`; deploy from `dev` later.
+- `feature/phase2-seo-ux` — Phase 2 work (SSG/SEO + gallery/trust/FAB/UX). **Merged to `dev`
+  and deployed to production 2026-11-04.**
+- `backup/pre-phase2-seo-ux` + tag `rollback/pre-phase2-seo-2026-11-04` — snapshot of
+  production **before** the Phase 2 deploy (commit `9a40881`), pushed to origin. To roll back:
+  `git checkout dev && git reset --hard backup/pre-phase2-seo-ux && git push origin dev --force-with-lease`.
 - Feature branches used conventional commits and were merged via stacked PRs.
 
 ### Workflow conventions
