@@ -1,10 +1,13 @@
 import { useLanguage } from "../i18n";
 import type { PropertyFilters } from "../lib/filter";
-import { getRegionLabel, REGIONS } from "../lib/regions";
-import type { PropertyType, Region } from "../types/Property";
+import type { FilterOptions } from "../lib/filterOptions";
+import { getProvinceLabel } from "../lib/provinces";
+import { getRegionLabel } from "../lib/regions";
+import type { Province, PropertyType, Region } from "../types/Property";
 
 interface Props {
   filters: PropertyFilters;
+  options: FilterOptions;
   onChange: (filters: PropertyFilters) => void;
   onClear: () => void;
 }
@@ -22,17 +25,26 @@ function parseOptionalNumber(value: string): number | undefined {
 }
 
 /**
- * Controlled filter bar over the property catalog: type, region, price
- * range, and land size range. Reports changes via `onChange`; the caller
- * (Home) owns the filter state and derives the visible list.
+ * Controlled filter bar over the property catalog: type, province, region,
+ * price range, and land size range. Each dropdown is populated from
+ * `options` (the distinct present values in the catalog) and hidden when
+ * fewer than two values are present. Reports changes via `onChange`; the
+ * caller (Home) owns the filter state and derives the visible list.
  */
-const FilterBar = ({ filters, onChange, onClear }: Props) => {
+const FilterBar = ({ filters, options, onChange, onClear }: Props) => {
   const { language, t } = useLanguage();
 
   const updateType = (value: string) => {
     onChange({
       ...filters,
       type: value === "" ? undefined : (value as PropertyType),
+    });
+  };
+
+  const updateProvince = (value: string) => {
+    onChange({
+      ...filters,
+      province: value === "" ? undefined : (value as Province),
     });
   };
 
@@ -80,40 +92,70 @@ const FilterBar = ({ filters, onChange, onClear }: Props) => {
   return (
     <div className="mb-8 rounded-lg border border-line bg-surface-muted p-4">
       <div className="flex flex-wrap items-end gap-4">
-        <div className="min-w-[8rem] flex-1">
-          <label className={labelClasses} htmlFor="filter-type">
-            {t("filterType")}
-          </label>
-          <select
-            id="filter-type"
-            className={inputClasses}
-            value={filters.type ?? ""}
-            onChange={(event) => updateType(event.target.value)}
-          >
-            <option value="">{t("filterAllTypes")}</option>
-            <option value="finca">{t("propertyTypeFinca")}</option>
-            <option value="lote">{t("propertyTypeLote")}</option>
-          </select>
-        </div>
+        {options.types.length >= 2 && (
+          <div className="min-w-[8rem] flex-1">
+            <label className={labelClasses} htmlFor="filter-type">
+              {t("filterType")}
+            </label>
+            <select
+              id="filter-type"
+              className={inputClasses}
+              value={filters.type ?? ""}
+              onChange={(event) => updateType(event.target.value)}
+            >
+              <option value="">{t("filterAllTypes")}</option>
+              {options.types.map((type) => (
+                <option key={type} value={type}>
+                  {type === "finca"
+                    ? t("propertyTypeFinca")
+                    : t("propertyTypeLote")}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
 
-        <div className="min-w-[10rem] flex-1">
-          <label className={labelClasses} htmlFor="filter-region">
-            {t("filterRegion")}
-          </label>
-          <select
-            id="filter-region"
-            className={inputClasses}
-            value={filters.region ?? ""}
-            onChange={(event) => updateRegion(event.target.value)}
-          >
-            <option value="">{t("filterAllRegions")}</option>
-            {REGIONS.map((region) => (
-              <option key={region} value={region}>
-                {getRegionLabel(region, language)}
-              </option>
-            ))}
-          </select>
-        </div>
+        {options.provinces.length >= 2 && (
+          <div className="min-w-[10rem] flex-1">
+            <label className={labelClasses} htmlFor="filter-province">
+              {t("filterProvince")}
+            </label>
+            <select
+              id="filter-province"
+              className={inputClasses}
+              value={filters.province ?? ""}
+              onChange={(event) => updateProvince(event.target.value)}
+            >
+              <option value="">{t("filterAllProvinces")}</option>
+              {options.provinces.map((province) => (
+                <option key={province} value={province}>
+                  {getProvinceLabel(province, language)}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
+
+        {options.regions.length >= 2 && (
+          <div className="min-w-[10rem] flex-1">
+            <label className={labelClasses} htmlFor="filter-region">
+              {t("filterRegion")}
+            </label>
+            <select
+              id="filter-region"
+              className={inputClasses}
+              value={filters.region ?? ""}
+              onChange={(event) => updateRegion(event.target.value)}
+            >
+              <option value="">{t("filterAllRegions")}</option>
+              {options.regions.map((region) => (
+                <option key={region} value={region}>
+                  {getRegionLabel(region, language)}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
 
         <div className="min-w-[12rem] flex-1">
           <span className={labelClasses}>{t("filterPriceRange")}</span>

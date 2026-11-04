@@ -45,7 +45,7 @@ const translations = {
     footerBrand: "© Beyond Realty Costa Rica",
     listingsPlaceholder:
       "Our curated catalog of fincas and lotes is coming soon. Check back shortly to explore exceptional properties across Costa Rica.",
-    propertyTypeFinca: "Finca",
+    propertyTypeFinca: "Acreage",
     propertyTypeLote: "Lot",
     bedsAbbr: "bd",
     bathsAbbr: "ba",
@@ -86,8 +86,10 @@ const translations = {
     contactFormNotConfigured:
       "Email contact isn't set up yet. Please reach us on WhatsApp instead.",
     filterAllTypes: "All types",
+    filterAllProvinces: "All provinces",
     filterAllRegions: "All regions",
     filterType: "Type",
+    filterProvince: "Province",
     filterRegion: "Region",
     filterPriceRange: "Price range (USD)",
     filterLandSizeRange: "Land size range (acres)",
@@ -182,8 +184,10 @@ const translations = {
     contactFormNotConfigured:
       "El contacto por correo aún no está configurado. Por favor escríbanos por WhatsApp.",
     filterAllTypes: "Todos los tipos",
+    filterAllProvinces: "Todas las provincias",
     filterAllRegions: "Todas las regiones",
     filterType: "Tipo",
+    filterProvince: "Provincia",
     filterRegion: "Región",
     filterPriceRange: "Rango de precio (USD)",
     filterLandSizeRange: "Rango de tamaño (acres)",

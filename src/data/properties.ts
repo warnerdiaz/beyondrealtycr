@@ -9,6 +9,7 @@ export const properties: Property[] = [
     priceUsd: 400000,
     landAcres: 37,
     region: "south-caribbean",
+    province: "limon",
     media: {
       en: [
         {

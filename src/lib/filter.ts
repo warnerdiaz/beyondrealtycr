@@ -1,4 +1,9 @@
-import type { Property, PropertyType, Region } from "../types/Property";
+import type {
+  Property,
+  Province,
+  PropertyType,
+  Region,
+} from "../types/Property";
 
 /**
  * Pure, dependency-free property filtering. No React, no I/O — safe to unit
@@ -16,6 +21,7 @@ export interface NumberRange {
 
 export interface PropertyFilters {
   type?: PropertyType;
+  province?: Province;
   region?: Region;
   priceRange?: NumberRange;
   landSizeRange?: NumberRange;
@@ -44,6 +50,12 @@ export function filterProperties(
 ): Property[] {
   return properties.filter((property) => {
     if (filters.type !== undefined && property.type !== filters.type) {
+      return false;
+    }
+    if (
+      filters.province !== undefined &&
+      property.province !== filters.province
+    ) {
       return false;
     }
     if (filters.region !== undefined && property.region !== filters.region) {

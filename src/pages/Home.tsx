@@ -5,6 +5,7 @@ import SellWithUs from "../components/SellWithUs";
 import { properties } from "../data/properties";
 import { useLanguage } from "../i18n";
 import { filterProperties, type PropertyFilters } from "../lib/filter";
+import { getFilterOptions } from "../lib/filterOptions";
 
 function Home() {
   const { t } = useLanguage();
@@ -12,6 +13,7 @@ function Home() {
   const [filters, setFilters] = useState<PropertyFilters>({});
 
   const visibleProperties = filterProperties(properties, filters);
+  const filterOptions = getFilterOptions(properties);
   const resultsLabel =
     visibleProperties.length === 1
       ? t("filterResultsCountSingular")
@@ -65,11 +67,14 @@ function Home() {
             <p className="max-w-2xl text-muted">{t("listingsPlaceholder")}</p>
           ) : (
             <>
-              <FilterBar
-                filters={filters}
-                onChange={setFilters}
-                onClear={() => setFilters({})}
-              />
+              {properties.length >= 2 && (
+                <FilterBar
+                  filters={filters}
+                  options={filterOptions}
+                  onChange={setFilters}
+                  onClear={() => setFilters({})}
+                />
+              )}
               <p className="mb-4 text-sm text-muted">
                 {visibleProperties.length} {resultsLabel}
               </p>
