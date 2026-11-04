@@ -1,7 +1,8 @@
 import { Link } from "react-router-dom";
 import { useLanguage } from "../i18n";
-import { formatLandSize, formatPrice } from "../lib/format";
+import { formatLandSize, formatPrice, formatPricePerAcre } from "../lib/format";
 import { getRegionLabel } from "../lib/regions";
+import { propertySlug } from "../lib/slug";
 import type { Property } from "../types/Property";
 
 interface Props {
@@ -18,6 +19,7 @@ const PropertyCard = ({ property }: Props) => {
   const typeLabel =
     property.type === "finca" ? t("propertyTypeFinca") : t("propertyTypeLote");
   const regionLabel = getRegionLabel(property.region, language);
+  const pricePerAcre = formatPricePerAcre(property.priceUsd, property.landAcres);
 
   const factParts = [typeLabel, formatLandSize(property.landAcres)];
   if (property.bedrooms !== undefined) {
@@ -29,7 +31,7 @@ const PropertyCard = ({ property }: Props) => {
 
   return (
     <Link
-      to={`/property/${property.id}`}
+      to={`/property/${propertySlug(property)}`}
       className="group block overflow-hidden rounded-lg border border-line bg-surface shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md"
     >
       <div className="aspect-[4/3] w-full overflow-hidden bg-surface-muted">
@@ -46,6 +48,9 @@ const PropertyCard = ({ property }: Props) => {
         <p className="mb-1 text-lg font-semibold text-ink">
           {formatPrice(property.priceUsd)}
         </p>
+        {pricePerAcre !== "" && (
+          <p className="mb-1 text-sm text-muted">{pricePerAcre}</p>
+        )}
         <h3 className="mb-1 truncate text-base font-medium text-ink">
           {translation.title}
         </h3>

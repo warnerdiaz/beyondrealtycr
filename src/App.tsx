@@ -1,64 +1,31 @@
-import { lazy, Suspense } from "react";
-import { HashRouter, Link, Route, Routes } from "react-router-dom";
-import ErrorBoundary from "./components/ErrorBoundary";
-import Footer from "./components/Footer";
-import Header from "./components/Header";
-import LanguageProvider from "./components/LanguageProvider";
-import ScrollToTop from "./components/ScrollToTop";
-import { useLanguage } from "./i18n";
+import type { RouteRecord } from "vite-react-ssg";
+import Layout from "./components/Layout";
+import { properties } from "./data/properties";
+import { propertySlug } from "./lib/slug";
+import Home from "./pages/Home";
+import NotFound from "./pages/NotFound";
+import PropertyDetails from "./pages/PropertyDetails";
 
-const Home = lazy(() => import("./pages/Home"));
-const PropertyDetails = lazy(() => import("./pages/PropertyDetails"));
-
-function AppContent() {
-  const { t } = useLanguage();
-
-  return (
-    <HashRouter>
-      <ScrollToTop />
-      <Header />
-      <ErrorBoundary
-        errorMessage={t("errorMessage")}
-        errorTitle={t("errorTitle")}
-        tryAgainLabel={t("tryAgain")}
-      >
-        <Suspense
-          fallback={
-            <div className="flex min-h-[90vh] items-center justify-center bg-surface text-ink">
-              {t("loading")}
-            </div>
-          }
-        >
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/property/:id" element={<PropertyDetails />} />
-            <Route
-              path="*"
-              element={
-                <main className="mx-auto max-w-4xl px-4 py-20 text-center">
-                  <h1 className="mb-4 text-2xl font-semibold">
-                    {t("pageNotFound")}
-                  </h1>
-                  <Link to="/" className="text-accent hover:text-accent-hover">
-                    {t("returnHome")}
-                  </Link>
-                </main>
-              }
-            />
-          </Routes>
-        </Suspense>
-      </ErrorBoundary>
-      <Footer />
-    </HashRouter>
-  );
-}
-
-function App() {
-  return (
-    <LanguageProvider>
-      <AppContent />
-    </LanguageProvider>
-  );
-}
-
-export default App;
+/**
+ * Data-router route table consumed by vite-react-ssg (see src/main.tsx). The
+ * root route renders the shared layout; `/property/:slug` is prerendered into
+ * one static page per listing via getStaticPaths. The catch-all handles
+ * in-app navigations to unknown routes; static deep-link misses fall back to
+ * public/404.html on GitHub Pages.
+ */
+export const routes: RouteRecord[] = [
+  {
+    path: "/",
+    element: <Layout />,
+    children: [
+      { index: true, element: <Home /> },
+      {
+        path: "property/:slug",
+        element: <PropertyDetails />,
+        getStaticPaths: () =>
+          properties.map((property) => `/property/${propertySlug(property)}`),
+      },
+      { path: "*", element: <NotFound /> },
+    ],
+  },
+];

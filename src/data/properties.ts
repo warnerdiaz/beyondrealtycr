@@ -1,10 +1,13 @@
 import type { Property } from "../types/Property";
 
-const mediaUrl = (path: string) => `media/${path}`;
+// Root-absolute so media resolves correctly from any route path (e.g.
+// /property/<slug>), not relative to the current URL.
+const mediaUrl = (path: string) => `/media/${path}`;
 
 export const properties: Property[] = [
   {
     id: "p1",
+    slug: "cahuita-finca-2-cabanas-bosque",
     type: "finca",
     priceUsd: 400000,
     landAcres: 37,

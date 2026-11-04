@@ -8,7 +8,19 @@ Design north star: the **navigation and listing format of Zillow**, adapted to a
 curated catalog, while keeping our **minimalist, monochrome brand**.
 
 **Status:** Phase 1 (visual redesign MVP) is **implemented and deployed** to `dev`.
-Phase 2 (SEO/prerender) is still pending — see the backlog near the end.
+Phase 2 (SEO/prerender) is **implemented** on branch `feature/phase2-seo-ux` (not yet
+deployed) — see "SSG / prerendering" below and the backlog near the end.
+
+---
+
+## Agent workflow (how to run work here)
+
+**Orchestrate, delegate implementation.** The expensive top-level model (Opus) should
+act primarily as an **orchestrator**: plan, decide, and review — then hand the actual
+implementation to **subagents running cheaper models** (e.g. the `general-purpose` or
+`claude` agent on Sonnet/Haiku) via the Agent tool. Reserve Opus-level direct editing for
+orchestration, tricky judgement calls, and final review. Spawn subagents for self-contained
+implementation chunks and have them report back; keep the orchestrator's own tool use lean.
 
 ---
 
@@ -16,15 +28,22 @@ Phase 2 (SEO/prerender) is still pending — see the backlog near the end.
 
 - **React 19** + **TypeScript** + **Vite 7**.
 - **Tailwind CSS v4** via `@tailwindcss/vite` (CSS-first `@theme` tokens; NO `tailwind.config.js`).
-- **react-router-dom v7**, **HashRouter** (clean URLs are Phase 2).
+- **react-router-dom v6** (data-router `RouteRecord` array in `src/App.tsx`), **BrowserRouter**
+  with **clean URLs** (`/property/<slug>`), prerendered by **vite-react-ssg**.
+  > NOTE: pinned to **RR v6** on purpose — `vite-react-ssg@0.9.2` imports `react-router-dom/server.js`,
+  > a subpath RR **v7 removed**, so the SSG server render breaks on v7. Do not bump to v7 until
+  > vite-react-ssg supports it. (The app's RR usage is identical across v6/v7.)
 - **Vitest** for unit tests (node environment).
-- Static site, deployed to **GitHub Pages** from the `dev` branch's `/docs` folder.
+- Static site, **prerendered to static HTML per route** and deployed to **GitHub Pages** from the
+  `dev` branch's `/docs` folder.
 - No backend, CMS, or database. Listings are data in the repo.
 
 ### Scripts
-- `npm run dev` — local dev server.
-- `npm run build` — `tsc -b && vite build` → writes to `docs/`.
-- `npm test` — `vitest run` (currently **46 tests** passing).
+- `npm run dev` — local dev server (`vite-react-ssg dev`; the SSG entry only exports
+  `createRoot`, so plain `vite` would not mount — use this script).
+- `npm run build` — `tsc -b && vite-react-ssg build` → prerenders one HTML file per route
+  into `docs/` (plus `sitemap.xml`; see below).
+- `npm test` — `vitest run` (currently **70 tests** passing).
 - `npm run lint` — ESLint (uses the **React Compiler** rules — avoid unnecessary `useMemo`/
   manual memoization; derive values directly in render).
 
@@ -180,7 +199,7 @@ Never commit real secrets; keep them in `.env.local` (gitignored) or the build e
   `public/.nojekyll` is likewise required.
 - **Deploy flow:**
   ```sh
-  npm run build          # regenerates docs/ (includes CNAME + .nojekyll)
+  npm run build          # prerenders docs/ (per-route HTML + sitemap.xml; CNAME + .nojekyll)
   git add -A && git commit -m "chore(deploy): build site"
   git push origin dev
   ```
@@ -197,6 +216,8 @@ Never commit real secrets; keep them in `.env.local` (gitignored) or the build e
 - `dev` — **default + production** (GitHub Pages publishing source).
 - `last-version` — backup snapshot of the pre-redesign site (do not delete).
 - `develop_jordan` — the redesign integration branch used during Phase 1.
+- `feature/phase2-seo-ux` — Phase 2 work (SSG/SEO + gallery/trust/FAB/UX); code-only, no
+  `docs/` build committed. Review locally with `npm run dev`; deploy from `dev` later.
 - Feature branches used conventional commits and were merged via stacked PRs.
 
 ### Workflow conventions
@@ -229,21 +250,49 @@ Never commit real secrets; keep them in `.env.local` (gitignored) or the build e
 
 ---
 
-## Phase 2 — SEO & shareability (PENDING)
+## SSG / prerendering (`src/main.tsx`, `src/App.tsx`, `vite.config.ts`)
 
-Goal: be findable on Google and show photo+title when a property link is pasted into
-WhatsApp/Facebook. Requires moving off **HashRouter** (`#/...`), which blocks per-page SEO
-and social previews on a static SPA. Keep routes structured so this migration stays low-friction.
+`vite-react-ssg` prerenders one static HTML file per route at build time and hydrates the
+same routes on the client.
+- **Entry** (`src/main.tsx`): exports `createRoot = ViteReactSSG({ routes })`.
+- **Routes** (`src/App.tsx`): a `RouteRecord[]` data table. Root route renders `Layout`
+  (providers + Header/Outlet/Footer/WhatsApp FAB). `/property/:slug` carries a
+  `getStaticPaths`; `vite.config.ts` `ssgOptions.includedRoutes` expands it to one page per
+  listing. The catch-all renders `NotFound`.
+- **URL identity**: `/property/<slug>`, where slug comes from `src/lib/slug.ts`
+  (`propertySlug` = explicit `Property.slug` else `slugify(title.en)`; `findPropertyBySlug`
+  resolves the route param). Media URLs in `src/data/properties.ts` are **root-absolute**
+  (`/media/...`) so they resolve from any route path.
+- **Per-page SEO**: pages set head tags via `<Head>` from `vite-react-ssg` (react-helmet):
+  `<title>`, description, `canonical`, OpenGraph/Twitter (property `og:image` = cover.jpg,
+  absolute via `src/config/site.ts`), and a `RealEstateListing` JSON-LD on the detail page.
+  `index.html` holds ONLY constants (`og:site_name`) — never duplicate `<Head>`-managed tags
+  there, or they appear twice in the prerendered HTML.
+- **Build-generated**: `sitemap.xml` (written by `ssgOptions.onFinished`). `public/robots.txt`
+  and `public/404.html` (branded GitHub Pages fallback) are static.
+- **Prerendered in English only** (primary US audience); the EN/ES toggle still switches
+  on-page copy client-side. Per-language URLs + hreflang + per-language OG images are deferred.
 
-Backlog:
-1. **Clean URLs** — real paths (e.g. `/property/<slug>`; `slugify` already exists in
-   `lib/format.ts`). On GitHub Pages this needs the SPA `404.html` redirect trick.
-2. **Per-property prerendering** — static HTML per route with correct `<title>`,
-   `<meta description>`, and **OpenGraph/Twitter** tags (image = property cover). Evaluate
-   `vite-react-ssg` (preferred, stays in React+Vite) or `react-snap`.
-3. **Structured data** — schema.org `RealEstateListing`/`Product` JSON-LD per property.
-4. **sitemap.xml** + **robots.txt**, generated at build.
-5. **Canonical + hreflang** tags for EN/ES.
-6. Per-language, per-property OG images (cover photo).
+### Phase 2 UX additions (on this branch)
+- **Gallery** (`src/components/Gallery.tsx` + `Lightbox.tsx`): detail-page stage + thumbnail
+  strip + fullscreen image lightbox; video-first; ordering/visibility logic is pure in
+  `src/lib/media.ts` (`galleryItems`, `galleryImages`, `shouldShowThumbStrip`). Degrades to
+  the inline video alone for today's video-only listings.
+- **Trust sections** (`WhyCostaRica.tsx`, `HowItWorks.tsx`) on the Home page
+  (hero → listings → Why CR → How it works → SellWithUs), plus a compact process note on the
+  detail page. The footer's old "why invest" block moved into `WhyCostaRica`.
+- **WhatsApp FAB** (`WhatsAppFab.tsx`): global teal floating button, generic localized
+  greeting (`buildGenericWhatsAppUrl`); property-specific CTAs stay on the detail page.
+- **Hero poster**: `public/media/hero-poster.jpg` (an `ffmpeg` frame of `hero.mp4`); also the
+  default home `og:image`.
+- **Price per acre**: `formatPricePerAcre` in `src/lib/format.ts`, shown on the card + detail
+  key-facts.
+- **Region locator** (`RegionLocator.tsx`): a pin motif + region/province labels (no exact
+  lot). A hand-drawn Costa Rica silhouette was tried and dropped — it didn't read as the
+  country; drop in a real GeoJSON-derived CR SVG later if a precise map is wanted.
+
+### Phase 2 backlog — remaining
+- **Per-language routes** (`/en/*`, `/es/*`) + **hreflang** + per-language OG images — deferred
+  until ES traffic justifies the extra routing (would move language from state to URL-derived).
 
 See the full PRD in `specs/zillow-style-redesign.prd.md`.

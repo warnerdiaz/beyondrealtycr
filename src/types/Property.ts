@@ -59,6 +59,12 @@ export interface PropertyFeatures {
 
 export interface Property {
   id: string;
+  /**
+   * Stable, SEO-facing URL slug (`/property/<slug>`). Hand-assigned so the
+   * URL survives title edits; when omitted it is derived from the English
+   * title (see src/lib/slug.ts). Keep it unique across listings.
+   */
+  slug?: string;
   type: PropertyType;
   priceUsd: number;
   landAcres: number;

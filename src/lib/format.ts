@@ -19,6 +19,24 @@ export function formatPrice(priceUsd: number): string {
 }
 
 /**
+ * Formats a USD price-per-acre figure with thousands separators and no
+ * decimals, e.g. priceUsd=400000, landAcres=37 -> "$10,811/acre". Guards the
+ * degenerate case (zero, negative, or non-finite land size) by returning an
+ * empty string so callers can conditionally render the figure.
+ */
+export function formatPricePerAcre(priceUsd: number, landAcres: number): string {
+  if (!Number.isFinite(landAcres) || landAcres <= 0) {
+    return "";
+  }
+  const pricePerAcre = Math.round(priceUsd / landAcres);
+  return `${new Intl.NumberFormat("en-US", {
+    currency: "USD",
+    maximumFractionDigits: 0,
+    style: "currency",
+  }).format(pricePerAcre)}/acre`;
+}
+
+/**
  * Formats a land size in acres with the hectare equivalent shown secondary,
  * e.g. 37 -> "37 acres (15 ha)". Handles the singular "1 acre" case.
  */

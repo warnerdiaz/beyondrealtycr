@@ -14,6 +14,12 @@ const MESSAGE_TEMPLATES: Record<Language, (title: string, location: string) => s
     `Hola, me interesa la propiedad: ${title} (${location}).`,
 };
 
+/** Localized greeting used by the global FAB when there is no property context. */
+const GENERIC_MESSAGES: Record<Language, string> = {
+  en: "Hi, I'm interested in your Costa Rica properties.",
+  es: "Hola, me interesan sus propiedades en Costa Rica.",
+};
+
 /** Strips everything but digits from a phone number, e.g. "+506 6000-0000" -> "50660000000". */
 function toDigits(phone: string): string {
   return phone.replace(/\D/g, "");
@@ -33,4 +39,13 @@ export function buildWhatsAppUrl(
   const message = MESSAGE_TEMPLATES[lang](title, location);
   const digits = toDigits(phone);
   return `https://wa.me/${digits}?text=${encodeURIComponent(message)}`;
+}
+
+/**
+ * Builds a `wa.me` URL prefilled with a localized generic greeting, for the
+ * global floating button where no specific property is in context.
+ */
+export function buildGenericWhatsAppUrl(phone: string, lang: Language): string {
+  const digits = toDigits(phone);
+  return `https://wa.me/${digits}?text=${encodeURIComponent(GENERIC_MESSAGES[lang])}`;
 }

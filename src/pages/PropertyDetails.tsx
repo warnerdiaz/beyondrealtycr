@@ -1,21 +1,25 @@
 import { Link, useParams } from "react-router-dom";
+import { Head } from "vite-react-ssg";
 import ContactForm from "../components/ContactForm";
+import Gallery from "../components/Gallery";
+import RegionLocator from "../components/RegionLocator";
 import { WHATSAPP_PHONE } from "../config/contact";
+import { absoluteUrl } from "../config/site";
 import { properties } from "../data/properties";
 import { useLanguage } from "../i18n";
-import { formatLandSize, formatPrice } from "../lib/format";
-import { selectCoverMedia, selectTourVideo } from "../lib/media";
+import { formatLandSize, formatPrice, formatPricePerAcre } from "../lib/format";
+import { selectCoverMedia } from "../lib/media";
 import { getRegionLabel } from "../lib/regions";
+import { findPropertyBySlug, propertySlug } from "../lib/slug";
 import { buildWhatsAppUrl } from "../lib/whatsapp";
 
 const PropertyDetails = () => {
-  const { id } = useParams();
+  const { slug } = useParams();
   const { language, t } = useLanguage();
-  const property = properties.find((p) => p.id === id);
+  const property = findPropertyBySlug(properties, slug);
 
   const media = property?.media[language] ?? [];
   const cover = selectCoverMedia(media);
-  const video = selectTourVideo(media);
 
   if (!property) {
     return (
@@ -29,11 +33,41 @@ const PropertyDetails = () => {
   }
 
   const translation = property.translations[language];
-  const posterUrl = cover?.poster ?? cover?.url;
 
   const typeLabel =
     property.type === "finca" ? t("propertyTypeFinca") : t("propertyTypeLote");
   const regionLabel = getRegionLabel(property.region, language);
+  const pricePerAcre = formatPricePerAcre(property.priceUsd, property.landAcres);
+
+  // SEO/social metadata. Prerendered in English (the default language), so
+  // the crawler-visible tags use the English translation; the client toggle
+  // updates them after hydration.
+  const canonical = absoluteUrl(`/property/${propertySlug(property)}`);
+  const ogImage = cover ? absoluteUrl(cover.poster ?? cover.url) : undefined;
+  const pageTitle = `${translation.title} — Beyond Realty CR`;
+  const metaDescription =
+    translation.description.length > 160
+      ? `${translation.description.slice(0, 157).trimEnd()}…`
+      : translation.description;
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "RealEstateListing",
+    name: translation.title,
+    description: translation.description,
+    url: canonical,
+    ...(ogImage ? { image: ogImage } : {}),
+    offers: {
+      "@type": "Offer",
+      price: property.priceUsd,
+      priceCurrency: "USD",
+      availability: "https://schema.org/InStock",
+    },
+    address: {
+      "@type": "PostalAddress",
+      addressLocality: translation.location,
+      addressCountry: "CR",
+    },
+  };
 
   const features = property.features;
   const featureRows: { label: string; value: string }[] = [];
@@ -49,6 +83,21 @@ const PropertyDetails = () => {
 
   return (
     <main className="min-h-[70vh] bg-surface text-ink">
+      <Head>
+        <title>{pageTitle}</title>
+        <meta name="description" content={metaDescription} />
+        <link rel="canonical" href={canonical} />
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content={translation.title} />
+        <meta property="og:description" content={metaDescription} />
+        <meta property="og:url" content={canonical} />
+        {ogImage && <meta property="og:image" content={ogImage} />}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={translation.title} />
+        <meta name="twitter:description" content={metaDescription} />
+        {ogImage && <meta name="twitter:image" content={ogImage} />}
+        <script type="application/ld+json">{JSON.stringify(jsonLd)}</script>
+      </Head>
       <div className="mx-auto w-full max-w-5xl px-4 py-8 sm:py-12">
         <Link
           to="/"
@@ -57,34 +106,14 @@ const PropertyDetails = () => {
           ← {t("returnListings")}
         </Link>
 
-        {/* Media — the tour video autoplays on loop (muted) so visitors
-            immediately see it is a video, with native controls to unmute,
-            pause, scrub, and go fullscreen. The cover is only the poster.
-            Falls back to the cover still when a listing has no video. */}
+        {/* Media gallery — tour video (if any) first, then browsable photos.
+            The video autoplays on loop (muted) so visitors immediately see
+            it is a video, with native controls to unmute, pause, scrub, and
+            go fullscreen. The cover is only ever a poster/thumbnail source.
+            When there's only a video (no photos), this renders just the
+            inline video with no thumbnail strip. */}
         <div className="mb-8">
-          {video ? (
-            <video
-              src={video.url}
-              poster={posterUrl}
-              autoPlay
-              muted
-              loop
-              playsInline
-              controls
-              aria-label={translation.title}
-              className="aspect-video w-full rounded-lg bg-black object-contain"
-            >
-              <track kind="captions" />
-            </video>
-          ) : (
-            cover && (
-              <img
-                src={cover.poster ?? cover.url}
-                alt={translation.title}
-                className="aspect-[16/10] w-full rounded-lg bg-surface-muted object-cover"
-              />
-            )
-          )}
+          <Gallery media={media} title={translation.title} />
         </div>
 
         {/* Price + title */}
@@ -126,6 +155,14 @@ const PropertyDetails = () => {
             </dt>
             <dd className="text-base font-medium">{regionLabel}</dd>
           </div>
+          {pricePerAcre !== "" && (
+            <div>
+              <dt className="text-xs uppercase tracking-wide text-muted">
+                {t("pricePerAcre")}
+              </dt>
+              <dd className="text-base font-medium">{pricePerAcre}</dd>
+            </div>
+          )}
           {property.buildingSize !== undefined && (
             <div>
               <dt className="text-xs uppercase tracking-wide text-muted">
@@ -159,6 +196,9 @@ const PropertyDetails = () => {
             </div>
           )}
         </dl>
+
+        {/* Where this is — stylized region locator (approximate, not the lot). */}
+        <RegionLocator region={property.region} province={property.province} />
 
         {/* Features */}
         {featureRows.length > 0 && (
@@ -202,6 +242,27 @@ const PropertyDetails = () => {
             {t("whatsAppCta")}
           </a>
           <ContactForm property={property} />
+
+          {/* Compact process reassurance — echoes the full "How it works"
+              section on the home page without repeating its bulk. Honest
+              process description only, no fabricated guarantees. */}
+          <div className="mt-6 border-t border-line pt-4">
+            <p className="mb-2 text-xs font-medium uppercase tracking-wide text-muted">
+              {t("howItWorksDetailNote")}
+            </p>
+            <ol className="flex flex-col gap-2 text-sm text-muted sm:flex-row sm:gap-4">
+              {[t("howStep1Title"), t("howStep2Title"), t("howStep3Title")].map(
+                (step, index) => (
+                  <li key={step} className="flex items-center gap-2">
+                    <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-accent text-xs font-semibold text-accent-contrast">
+                      {index + 1}
+                    </span>
+                    <span>{step}</span>
+                  </li>
+                ),
+              )}
+            </ol>
+          </div>
         </section>
 
         <Link

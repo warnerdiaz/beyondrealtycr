@@ -1,7 +1,16 @@
 import { useState } from "react";
+import { Head } from "vite-react-ssg";
 import FilterBar from "../components/FilterBar";
+import HowItWorks from "../components/HowItWorks";
 import PropertyCard from "../components/PropertyCard";
 import SellWithUs from "../components/SellWithUs";
+import WhyCostaRica from "../components/WhyCostaRica";
+import {
+  absoluteUrl,
+  DEFAULT_OG_IMAGE,
+  SITE_DESCRIPTION,
+  SITE_TITLE,
+} from "../config/site";
 import { properties } from "../data/properties";
 import { useLanguage } from "../i18n";
 import { filterProperties, type PropertyFilters } from "../lib/filter";
@@ -26,10 +35,25 @@ function Home() {
 
   return (
     <div>
+      <Head>
+        <title>{SITE_TITLE}</title>
+        <meta name="description" content={SITE_DESCRIPTION} />
+        <link rel="canonical" href={absoluteUrl("/")} />
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content={SITE_TITLE} />
+        <meta property="og:description" content={SITE_DESCRIPTION} />
+        <meta property="og:url" content={absoluteUrl("/")} />
+        <meta property="og:image" content={DEFAULT_OG_IMAGE} />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={SITE_TITLE} />
+        <meta name="twitter:description" content={SITE_DESCRIPTION} />
+        <meta name="twitter:image" content={DEFAULT_OG_IMAGE} />
+      </Head>
       {/* Dark cinematic video hero (brand). */}
       <section className="relative flex min-h-[82vh] items-center justify-center overflow-hidden text-center">
         <video
           src={heroVideo}
+          poster="/media/hero-poster.jpg"
           autoPlay
           muted
           loop
@@ -94,6 +118,8 @@ function Home() {
         </div>
       </section>
 
+      <WhyCostaRica />
+      <HowItWorks />
       <SellWithUs />
     </div>
   );

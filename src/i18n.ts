@@ -51,7 +51,10 @@ const translations = {
     bathsAbbr: "ba",
     propertyType: "Type",
     landSize: "Land size",
+    pricePerAcre: "Price per acre",
     region: "Region",
+    locationTitle: "Location",
+    mapApproxNote: "Approximate region — not the exact lot location.",
     featureWater: "Water",
     featureElectricity: "Electricity",
     featureForest: "Forest",
@@ -100,6 +103,17 @@ const translations = {
     filterResultsCountPlural: "properties",
     filterEmptyState:
       "No properties match your filters. Try adjusting or clearing them.",
+    howItWorksTitle: "How it works",
+    howStep1Title: "We curate & vet listings",
+    howStep1Body:
+      "Every property is hand-picked. We gather the key details so you can evaluate it seriously before reaching out.",
+    howStep2Title: "You reach out",
+    howStep2Body:
+      "Contact us on WhatsApp or the form with any question. Fast, direct replies — no middlemen.",
+    howStep3Title: "We guide the purchase",
+    howStep3Body:
+      "We walk you through the steps of buying land in Costa Rica, so you always know what comes next.",
+    howItWorksDetailNote: "Here's how buying with us works:",
   },
   es: {
     bathrooms: "Baños",
@@ -149,7 +163,10 @@ const translations = {
     bathsAbbr: "baños",
     propertyType: "Tipo",
     landSize: "Tamaño del terreno",
+    pricePerAcre: "Precio por acre",
     region: "Región",
+    locationTitle: "Ubicación",
+    mapApproxNote: "Región aproximada — no es la ubicación exacta del lote.",
     featureWater: "Agua",
     featureElectricity: "Electricidad",
     featureForest: "Bosque",
@@ -198,6 +215,17 @@ const translations = {
     filterResultsCountPlural: "propiedades",
     filterEmptyState:
       "Ninguna propiedad coincide con sus filtros. Intente ajustarlos o límpielos.",
+    howItWorksTitle: "Cómo funciona",
+    howStep1Title: "Seleccionamos y verificamos cada propiedad",
+    howStep1Body:
+      "Cada propiedad se elige a mano. Reunimos los detalles clave para que pueda evaluarla con seriedad antes de contactarnos.",
+    howStep2Title: "Usted nos contacta",
+    howStep2Body:
+      "Escríbanos por WhatsApp o mediante el formulario con cualquier pregunta. Respuestas rápidas y directas, sin intermediarios.",
+    howStep3Title: "Lo guiamos durante la compra",
+    howStep3Body:
+      "Le acompañamos en los pasos para comprar un terreno en Costa Rica, para que siempre sepa qué sigue.",
+    howItWorksDetailNote: "Así es como funciona comprar con nosotros:",
   },
 } as const;
 

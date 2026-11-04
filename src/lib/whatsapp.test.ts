@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { Property } from "../types/Property";
-import { buildWhatsAppUrl } from "./whatsapp";
+import { buildGenericWhatsAppUrl, buildWhatsAppUrl } from "./whatsapp";
 
 const property: Property = {
   id: "p1",
@@ -62,5 +62,23 @@ describe("buildWhatsAppUrl", () => {
     const query = url.split("?text=")[1];
     expect(query).not.toContain(" ");
     expect(query).not.toContain("&");
+  });
+});
+
+describe("buildGenericWhatsAppUrl", () => {
+  it("produces a wa.me URL with the digits-only phone number", () => {
+    const url = buildGenericWhatsAppUrl("+506 6000-0000", "en");
+    expect(url.startsWith("https://wa.me/50660000000?text=")).toBe(true);
+  });
+
+  it("builds a localized generic greeting with no property reference", () => {
+    const en = decodeURIComponent(
+      buildGenericWhatsAppUrl("50660000000", "en").split("?text=")[1],
+    );
+    const es = decodeURIComponent(
+      buildGenericWhatsAppUrl("50660000000", "es").split("?text=")[1],
+    );
+    expect(en).toBe("Hi, I'm interested in your Costa Rica properties.");
+    expect(es).toBe("Hola, me interesan sus propiedades en Costa Rica.");
   });
 });

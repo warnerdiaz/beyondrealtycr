@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { formatLandSize, formatPrice, slugify } from "./format";
+import { formatLandSize, formatPrice, formatPricePerAcre, slugify } from "./format";
 
 describe("formatPrice", () => {
   it("formats a typical price with thousands separators and no decimals", () => {
@@ -41,6 +41,32 @@ describe("formatLandSize", () => {
     expect(formatLandSize(10)).toBe("10 acres (4 ha)");
     // 100 acres * 0.4047 = 40.47 -> rounds to 40
     expect(formatLandSize(100)).toBe("100 acres (40 ha)");
+  });
+});
+
+describe("formatPricePerAcre", () => {
+  it("formats a typical price per acre with thousands separators", () => {
+    expect(formatPricePerAcre(400000, 37)).toBe("$10,811/acre");
+  });
+
+  it("rounds to the nearest whole dollar", () => {
+    // 100000 / 3 = 33333.33... -> rounds to 33333
+    expect(formatPricePerAcre(100000, 3)).toBe("$33,333/acre");
+    // 100000 / 7 = 14285.71... -> rounds to 14286
+    expect(formatPricePerAcre(100000, 7)).toBe("$14,286/acre");
+  });
+
+  it("returns an empty string when landAcres is zero", () => {
+    expect(formatPricePerAcre(400000, 0)).toBe("");
+  });
+
+  it("returns an empty string when landAcres is negative", () => {
+    expect(formatPricePerAcre(400000, -5)).toBe("");
+  });
+
+  it("returns an empty string when landAcres is not finite", () => {
+    expect(formatPricePerAcre(400000, Infinity)).toBe("");
+    expect(formatPricePerAcre(400000, NaN)).toBe("");
   });
 });
 
