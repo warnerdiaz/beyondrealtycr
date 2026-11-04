@@ -49,7 +49,7 @@ src/
     format.ts  (+test)      formatPrice, formatLandSize (acres→ha), slugify
     regions.ts              REGIONS, REGION_LABELS, getRegionLabel(region, lang)
     provinces.ts            PROVINCES, PROVINCE_LABELS, getProvinceLabel(province, lang)
-    media.ts   (+test)      selectCoverMedia, getGalleryImages, getGalleryVideos
+    media.ts   (+test)      selectCoverMedia, selectTourVideo
     whatsapp.ts (+test)     buildWhatsAppUrl(phone, property, lang)
     filter.ts  (+test)      filterProperties(properties, filters); PropertyFilters type
     filterOptions.ts (+test) getFilterOptions(properties) → present type/province/region values
@@ -58,14 +58,13 @@ src/
     Footer.tsx              light footer
     PropertyCard.tsx        Zillow-style card (links to /property/:id)
     FilterBar.tsx           controlled type/province/region/price/land-size filters
-    Lightbox.tsx            custom full-screen gallery overlay (no external dep)
     ContactForm.tsx         Web3Forms email form with idle/submitting/success/error states
     SellWithUs.tsx          CTA band for property owners (mailto)
     LanguageProvider.tsx    i18n context provider
     ScrollToTop.tsx, ErrorBoundary.tsx
   pages/
     Home.tsx                dark video hero → light #listings (FilterBar + card grid)
-    PropertyDetails.tsx     gallery + lightbox + key facts + contact section
+    PropertyDetails.tsx     autoplaying looping tour video + key facts + contact section
 ```
 
 **Architecture rule:** business logic lives in the pure `src/lib/*` modules (deep modules,
