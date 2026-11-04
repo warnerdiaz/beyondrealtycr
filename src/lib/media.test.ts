@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { PropertyMedia } from "../types/Property";
-import { getGalleryImages, getGalleryVideos, selectCoverMedia } from "./media";
+import { selectCoverMedia, selectTourVideo } from "./media";
 
 const cover: PropertyMedia = { type: "cover", url: "cover.jpg" };
 const image: PropertyMedia = { type: "image", url: "image.jpg" };
@@ -24,22 +24,17 @@ describe("selectCoverMedia", () => {
   });
 });
 
-describe("getGalleryImages", () => {
-  it("returns cover items before image items, excluding video", () => {
-    expect(getGalleryImages([video, image, cover])).toEqual([cover, image]);
+describe("selectTourVideo", () => {
+  it("returns the first video item", () => {
+    const second: PropertyMedia = { type: "video", url: "tour2.mp4" };
+    expect(selectTourVideo([cover, video, second])).toBe(video);
   });
 
-  it("returns an empty array when there are no stills", () => {
-    expect(getGalleryImages([video])).toEqual([]);
-  });
-});
-
-describe("getGalleryVideos", () => {
-  it("returns only video items", () => {
-    expect(getGalleryVideos([video, image, cover])).toEqual([video]);
+  it("returns undefined when there is no video", () => {
+    expect(selectTourVideo([cover, image])).toBeUndefined();
   });
 
-  it("returns an empty array when there is no video", () => {
-    expect(getGalleryVideos([image, cover])).toEqual([]);
+  it("returns undefined for an empty list", () => {
+    expect(selectTourVideo([])).toBeUndefined();
   });
 });

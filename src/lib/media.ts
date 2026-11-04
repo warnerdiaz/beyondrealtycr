@@ -1,14 +1,16 @@
 import type { PropertyMedia } from "../types/Property";
 
 /**
- * Pure helpers for selecting/ordering property gallery media. No React, no
- * I/O — safe to unit test directly and reuse from the detail page gallery.
+ * Pure helpers for selecting property media. No React, no I/O — safe to
+ * unit test directly and reuse from the card (cover thumbnail) and the
+ * detail page (tour video + poster).
  */
 
 /**
  * Returns the best "cover" item for a media list: an explicit `cover` item
  * if present, otherwise the first `image`, otherwise the first item of any
- * kind. Returns undefined for an empty list.
+ * kind. Returns undefined for an empty list. Used for the Home card
+ * thumbnail and as the detail-page video poster.
  */
 export function selectCoverMedia(
   media: PropertyMedia[],
@@ -21,17 +23,12 @@ export function selectCoverMedia(
 }
 
 /**
- * Splits a property's media into the still images shown in the gallery
- * (cover + image items, cover first) and the video items shown separately
- * so the caller can lazy-load video playback on demand.
+ * Returns the primary tour video for a property: the first `video` item, or
+ * undefined when the property has no video. The detail page plays this as
+ * its single piece of media.
  */
-export function getGalleryImages(media: PropertyMedia[]): PropertyMedia[] {
-  const cover = media.filter((item) => item.type === "cover");
-  const images = media.filter((item) => item.type === "image");
-  return [...cover, ...images];
-}
-
-/** Returns only the video items from a property's media list. */
-export function getGalleryVideos(media: PropertyMedia[]): PropertyMedia[] {
-  return media.filter((item) => item.type === "video");
+export function selectTourVideo(
+  media: PropertyMedia[],
+): PropertyMedia | undefined {
+  return media.find((item) => item.type === "video");
 }

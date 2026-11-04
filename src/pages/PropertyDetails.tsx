@@ -1,12 +1,10 @@
-import { useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import ContactForm from "../components/ContactForm";
-import Lightbox from "../components/Lightbox";
 import { WHATSAPP_PHONE } from "../config/contact";
 import { properties } from "../data/properties";
 import { useLanguage } from "../i18n";
 import { formatLandSize, formatPrice } from "../lib/format";
-import { getGalleryImages, getGalleryVideos, selectCoverMedia } from "../lib/media";
+import { selectCoverMedia, selectTourVideo } from "../lib/media";
 import { getRegionLabel } from "../lib/regions";
 import { buildWhatsAppUrl } from "../lib/whatsapp";
 
@@ -15,14 +13,9 @@ const PropertyDetails = () => {
   const { language, t } = useLanguage();
   const property = properties.find((p) => p.id === id);
 
-  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
-  const [videoOpened, setVideoOpened] = useState(false);
-
   const media = property?.media[language] ?? [];
-  const galleryImages = getGalleryImages(media);
-  const videos = getGalleryVideos(media);
   const cover = selectCoverMedia(media);
-  const video = videos[0];
+  const video = selectTourVideo(media);
 
   if (!property) {
     return (
@@ -36,11 +29,7 @@ const PropertyDetails = () => {
   }
 
   const translation = property.translations[language];
-
-  // Thumbnails shown in the strip: all still images, in cover-first order.
-  // The hero shows either the lightbox-selected image or the cover/first image.
-  const heroImage =
-    lightboxIndex !== null ? galleryImages[lightboxIndex] : galleryImages[0];
+  const posterUrl = cover?.poster ?? cover?.url;
 
   const typeLabel =
     property.type === "finca" ? t("propertyTypeFinca") : t("propertyTypeLote");
@@ -68,81 +57,35 @@ const PropertyDetails = () => {
           ← {t("returnListings")}
         </Link>
 
-        {/* Media gallery */}
+        {/* Media — the tour video autoplays on loop (muted) so visitors
+            immediately see it is a video, with native controls to unmute,
+            pause, scrub, and go fullscreen. The cover is only the poster.
+            Falls back to the cover still when a listing has no video. */}
         <div className="mb-8">
-          <button
-            type="button"
-            onClick={() => setLightboxIndex(0)}
-            aria-label={t("propertyGallery")}
-            className="block aspect-[16/10] w-full overflow-hidden rounded-lg bg-surface-muted"
-          >
-            {heroImage && (
-              <img
-                src={heroImage.url}
-                alt={translation.title}
-                className="h-full w-full object-cover"
-              />
-            )}
-          </button>
-
-          {(galleryImages.length > 1 || video) && (
-            <div className="mt-3 flex gap-3 overflow-x-auto pb-1">
-              {galleryImages.map((item, i) => (
-                <button
-                  key={item.url}
-                  type="button"
-                  onClick={() => setLightboxIndex(i)}
-                  aria-label={`${t("galleryThumbAlt")} ${i + 1}`}
-                  className="h-20 w-28 flex-shrink-0 overflow-hidden rounded-md border border-line"
-                >
-                  <img
-                    src={item.url}
-                    alt=""
-                    loading="lazy"
-                    className="h-full w-full object-cover"
-                  />
-                </button>
-              ))}
-
-              {video && (
-                <button
-                  type="button"
-                  onClick={() => setVideoOpened(true)}
-                  aria-label={t("playVideo")}
-                  className="relative h-20 w-28 flex-shrink-0 overflow-hidden rounded-md border border-line"
-                >
-                  {cover && (
-                    <img
-                      src={cover.poster ?? cover.url}
-                      alt=""
-                      loading="lazy"
-                      className="h-full w-full object-cover"
-                    />
-                  )}
-                  <span className="absolute inset-0 flex items-center justify-center bg-black/40">
-                    <span className="flex h-8 w-8 items-center justify-center rounded-full bg-white/90 text-ink">
-                      ▶
-                    </span>
-                  </span>
-                </button>
-              )}
-            </div>
-          )}
-        </div>
-
-        {/* Video player — only mounted with a src once the user opts in */}
-        {video && videoOpened && (
-          <div className="mb-8 aspect-video w-full overflow-hidden rounded-lg bg-black">
+          {video ? (
             <video
               src={video.url}
-              controls
+              poster={posterUrl}
               autoPlay
-              className="h-full w-full"
+              muted
+              loop
+              playsInline
+              controls
+              aria-label={translation.title}
+              className="aspect-video w-full rounded-lg bg-black object-contain"
             >
               <track kind="captions" />
             </video>
-          </div>
-        )}
+          ) : (
+            cover && (
+              <img
+                src={cover.poster ?? cover.url}
+                alt={translation.title}
+                className="aspect-[16/10] w-full rounded-lg bg-surface-muted object-cover"
+              />
+            )
+          )}
+        </div>
 
         {/* Price + title */}
         <h1 className="mb-1 text-3xl font-semibold">{translation.title}</h1>
@@ -268,18 +211,6 @@ const PropertyDetails = () => {
           ← {t("returnListings")}
         </Link>
       </div>
-
-      {lightboxIndex !== null && galleryImages.length > 0 && (
-        <Lightbox
-          images={galleryImages.map((item) => ({
-            url: item.url,
-            alt: translation.title,
-          }))}
-          index={lightboxIndex}
-          onIndexChange={setLightboxIndex}
-          onClose={() => setLightboxIndex(null)}
-        />
-      )}
     </main>
   );
 };
