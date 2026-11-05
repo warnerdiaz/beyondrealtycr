@@ -9,7 +9,7 @@ export const properties: Property[] = [
     id: "p1",
     slug: "cahuita-finca-2-cabanas-bosque",
     type: "finca",
-    priceUsd: 400000,
+    priceUsd: 600000,
     landAcres: 37,
     region: "south-caribbean",
     province: "limon",
